@@ -22,15 +22,25 @@ Redis is a very commonly used instance of a Key Value store type system.
 
 You can dig into all the variations of how to launch a Redis Docker instance from the documentation on its [Docker Hub page](https://hub.docker.com/_/redis). The below command should get you started quickly though.
 
-``` shell
-docker run --name redis-lab -d redis:7.0.4-bullseye
+``` text
+docker run --name redis-lab --network labnetwork -d redis:7.0.4-bullseye
 docker exec -it redis-lab /bin/bash
 root@cb2bc569195b:/data# redis-cli
 127.0.0.1:6379> ping
+```
+``` shell
 PONG
+```
+``` text
 127.0.0.1:6379> set mykey somevalue
+```
+``` shell
 OK
+```
+``` text
 127.0.0.1:6379> get mykey
+```
+``` shell
 "somevalue"
 ```
 
@@ -44,14 +54,16 @@ Elasticsearch is a fairly popular text indexing and search engine, and falls in 
 
 We can setup a working instance with the following:
 
-``` shell
-docker run --name elasticsearch-lab -d -p 9200:9200 -p 9300:9300 \
+``` text
+docker run --name elasticsearch-lab --network labnetwork -d -p 9200:9200 -p 9300:9300 \
     -e "discovery.type=single-node" \
     -e "xpack.security.enabled=false" \
     -e "xpack.security.http.ssl.enabled=false" \
     -e "xpack.security.transport.ssl.enabled=false" elasticsearch:8.3.2
 
 curl -X POST "localhost:9200/test_index/_doc/1?pretty" -H 'Content-Type: application/json' -d '{ "mykey": "somevalue" }'
+```
+``` shell
 {
   "_index" : "test_index",
   "_id" : "1",
@@ -65,8 +77,11 @@ curl -X POST "localhost:9200/test_index/_doc/1?pretty" -H 'Content-Type: applica
   "_seq_no" : 0,
   "_primary_term" : 1
 }
-
+```
+``` text
 curl -X GET "localhost:9200/test_index/_doc/1?pretty"
+```
+``` shell
 {
   "_index" : "test_index",
   "_id" : "1",
@@ -82,7 +97,7 @@ curl -X GET "localhost:9200/test_index/_doc/1?pretty"
 
 There are some good getting started guides in the Elasticsearch documentation you can run through. Follow through the below using `curl` as a client.
 
-- [https://www.elastic.co/guide/en/elasticsearch/reference/7.17/getting-started.html](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/getting-started.html)
+- [Elasticsearch Quick Start](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/getting-started.html)
 
 
 ## Neo4j
@@ -93,10 +108,12 @@ One of the more popular offerings would be Neo4j, which is fairly easy to get up
 one of the Neo4j getting started guides, and you should quickly see how these graph relationships would work in practice.
 
 
-``` shell
-docker run --name neo4j-lab -d neo4j:4.4.9-community
+``` text
+docker run --name neo4j-lab --network labnetwork -d neo4j:4.4.9-community
 docker exec -it neo4j-lab /bin/bash
 root@3ad5cf322de1:/var/lib/neo4j# cypher-shell -u neo4j -p neo4j
+```
+``` shell
 Password change required
 new password:
 confirm password: 
@@ -108,9 +125,9 @@ neo4j@neo4j>
 
 Try running through one of the Neo4j getting started guides, and you should quickly see how these graph relationships would work in practice.
 
-Note: The guide assumes a different client than the built in shell from above. One semicolon is needed after every cypher block, not per line.
+> Note: The guide assumes a different client than the built in shell from above. One semicolon is needed after every cypher block, not per line.
 
-- [https://neo4j.com/docs/cypher-manual/4.4/introduction/](https://neo4j.com/docs/cypher-manual/4.4/introduction/)
+- [Neo4j Introduction](https://neo4j.com/docs/cypher-manual/4.4/introduction/)
 
 
 ## Cassandra
@@ -119,15 +136,21 @@ Cassandra can be placed in the category of Wide Column NoSQL database systems. W
 diving into this system in more depth, but we can still go over the same exercise here to get a quick testable lab environment
 started. 
 
-``` shell
-docker run --name cassandra-lab -d -p 9042:9042 cassandra:4.0.4
+``` text
+docker run --name cassandra-lab --network labnetwork -d -p 9042:9042 cassandra:4.0.4
 docker exec -it cassandra-lab /bin/bash
+# Might need to wait some time for startup to complete
 root@96eaf3fafc82:/# cqlsh
+```
+``` shell
 Connected to Test Cluster at 127.0.0.1:9042
 [cqlsh 6.0.0 | Cassandra 4.0.4 | CQL spec 3.4.5 | Native protocol v5]
 Use HELP for help.
+```
+``` text
 cqlsh> SELECT cluster_name, listen_address FROM system.local;
-
+```
+``` shell
  cluster_name | listen_address
 --------------+----------------
  Test Cluster |     172.17.0.5
@@ -135,7 +158,7 @@ cqlsh> SELECT cluster_name, listen_address FROM system.local;
 (1 rows)
 ```
 
-There is a fairly trivial quickstart guide you can take a look at [https://cassandra.apache.org/_/quickstart.html](https://cassandra.apache.org/_/quickstart.html)
+There is a fairly trivial quickstart guide you can take a look at [Cassandra Quickstart](https://cassandra.apache.org/_/quickstart.html)
 There isn't much content there to follow, but it should be enough for you to see that it greatly resembles the Relational
 Database structure we've been using up until now.
 
